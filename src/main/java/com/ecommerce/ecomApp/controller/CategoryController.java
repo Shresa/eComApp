@@ -12,6 +12,7 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     public CategoryService serv;
+    public Long lastId = 1L;
     @GetMapping("/api/public/categories")
     public List<Category> getAllCategories() {
         return serv.getAllCategories();
@@ -19,8 +20,14 @@ public class CategoryController {
 
     @PostMapping("/api/public/categories")
     public String createCategory(@RequestBody Category category) {
+        category.setCategoryId(lastId++);
         serv.createCategory(category);
         return "new category added";
+    }
+
+    @DeleteMapping("/api/admin/categories/{categoryId}")
+    public String deleteCategory(@PathVariable Long categoryId) {
+        return serv.deleteCategory(categoryId);
     }
 
 }

@@ -16,4 +16,14 @@ public class CategoryServiceImpl implements CategoryService{
     public void createCategory(Category category){
         categories.add(category);
     }
+    public String deleteCategory(Long CategoryId){
+        Category cat = categories.stream().
+                        filter(c->c.getCategoryId().equals(CategoryId)).
+                findFirst().orElse(null);
+        if(cat==null) {
+            return "No such Category found";
+        }
+        categories.remove(cat);
+        return "Category with categoryId: " + CategoryId + " has been deleted";
+    }
 }
