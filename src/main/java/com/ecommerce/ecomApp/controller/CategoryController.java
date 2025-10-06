@@ -16,16 +16,19 @@ public class CategoryController {
     @Autowired
     public CategoryService serv;
     public Long lastId = 1L;
-    @GetMapping("/api/public/categories")
-    public List<Category> getAllCategories() {
-        return serv.getAllCategories();
+//    @GetMapping("/api/public/categories")
+    @RequestMapping(value = "/api/public/categories", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> cats = serv.getAllCategories();
+        return new ResponseEntity<>(cats,HttpStatus.OK);
     }
 
-    @PostMapping("/api/public/categories")
-    public String createCategory(@RequestBody Category category) {
+//    @PostMapping("/api/public/categories")
+    @RequestMapping(value = "/api/public/categories", method = RequestMethod.POST)
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
         category.setCategoryId(lastId++);
         serv.createCategory(category);
-        return "new category added";
+        return new ResponseEntity<>("New Category has been added", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/admin/categories/{categoryId}")
@@ -34,7 +37,18 @@ public class CategoryController {
             String status = serv.deleteCategory(categoryId);
             return new ResponseEntity<>(status, HttpStatus.OK);
 //            return ResponseEntity.ok(status);
-//              return ResponseEntity.status(HttpStatus.OK).body(status);
+//            return ResponseEntity.status(HttpStatus.OK).body(status);
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
+    }
+
+    @PutMapping("/api/public/categories/{categoryId}")
+    public ResponseEntity<String> updateCategory(@RequestBody Category category,
+                                                 @PathVariable Long categoryId) {
+        try {
+            Category status = serv.updateCategory(category, categoryId);
+            return new ResponseEntity<>("Updated category for category id: " + categoryId + " was updated", HttpStatus.OK);
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
         }
