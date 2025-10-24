@@ -15,7 +15,6 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     public CategoryService serv;
-    public Long lastId = 1L;
 //    @GetMapping("/api/public/categories")
     @RequestMapping(value = "/api/public/categories", method = RequestMethod.GET)
     public ResponseEntity<List<Category>> getAllCategories() {
@@ -26,7 +25,7 @@ public class CategoryController {
 //    @PostMapping("/api/public/categories")
     @RequestMapping(value = "/api/public/categories", method = RequestMethod.POST)
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
-        category.setCategoryId(lastId++);
+//        category.setCategoryId(lastId++);
         serv.createCategory(category);
         return new ResponseEntity<>("New Category has been added", HttpStatus.CREATED);
     }
